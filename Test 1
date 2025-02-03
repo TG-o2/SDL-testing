@@ -1,0 +1,60 @@
+#include <SDL2/SDL.h>
+#include <stdio.h>
+
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 600
+
+int main() {
+    // Step 1: Initialize SDL
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
+        return 1;
+    }
+
+    // Step 2: Create a window
+    SDL_Window* window = SDL_CreateWindow("Pong Game",
+                                          SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                                          SCREEN_WIDTH, SCREEN_HEIGHT,
+                                          SDL_WINDOW_SHOWN);
+    if (!window) {
+        printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
+        SDL_Quit();
+        return 1;
+    }
+
+    // Step 3: Create a renderer
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    if (!renderer) {
+        printf("Renderer could not be created! SDL_Error: %s\n", SDL_GetError());
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return 1;
+    }
+
+    // Step 4: Game loop
+    int running = 1;
+    SDL_Event event;
+
+    while (running) {
+        // Event handling
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) { // If close button is pressed
+                running = 0;
+            }
+        }
+
+        // Rendering (background color)
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Black background
+        SDL_RenderClear(renderer);
+
+        // Present the frame
+        SDL_RenderPresent(renderer);
+    }
+
+    // Step 5: Clean up
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+
+    return 0;
+}
